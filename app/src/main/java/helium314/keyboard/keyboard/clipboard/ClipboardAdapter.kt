@@ -4,12 +4,14 @@ package helium314.keyboard.keyboard.clipboard
 
 import android.annotation.SuppressLint
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import helium314.keyboard.latin.ClipboardHistoryEntry
@@ -52,16 +54,19 @@ class ClipboardAdapter(
         private val pinnedIconView: ImageView
         private val contentTextView: TextView
         private val contentImageView: ImageView
+        private val backgroundContainer: LinearLayout
 
         init {
             view.apply {
                 setOnClickListener(this@ViewHolder)
                 setOnTouchListener(this@ViewHolder)
                 setOnLongClickListener(this@ViewHolder)
-                setBackgroundResource(itemBackgroundId)
                 isHapticFeedbackEnabled = false
             }
-            Settings.getValues().mColors.setBackground(view, ColorType.KEY_BACKGROUND)
+            backgroundContainer = view.findViewById<LinearLayout>(R.id.clipboard_entry_background).apply {
+                setBackgroundResource(itemBackgroundId)
+            }
+            Settings.getValues().mColors.setBackground(backgroundContainer, ColorType.KEY_BACKGROUND)
             pinnedIconView = view.findViewById<ImageView>(R.id.clipboard_entry_pinned_icon).apply {
                 visibility = View.GONE
                 setImageResource(pinnedIconResId)
@@ -72,9 +77,18 @@ class ClipboardAdapter(
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, itemTextSize)
             }
             contentImageView = view.findViewById(R.id.clipboard_entry_image_content)
-            clipboardLayoutParams.setItemProperties(view)
             val colors = Settings.getValues().mColors
             colors.setColor(pinnedIconView, ColorType.CLIPBOARD_PIN)
+            
+            // Apply rounded corner background
+            val context = view.context
+            val cornerRadius = context.resources.getDimensionPixelSize(R.dimen.config_clipboard_entry_corner_radius).toFloat()
+            val backgroundColor = colors.get(ColorType.KEY_BACKGROUND)
+            val backgroundDrawable = GradientDrawable().apply {
+                setColor(backgroundColor)
+                cornerRadius = cornerRadius
+            }
+            backgroundContainer.background = backgroundDrawable
         }
 
         fun setContent(historyEntry: ClipboardHistoryEntry?) {

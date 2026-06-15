@@ -77,6 +77,8 @@
 
     <!-- Clipboard keyboard -->
     <integer name="config_clipboard_keyboard_col_count">2</integer>
+    <dimen name="config_clipboard_entry_height">80dp</dimen>
+    <dimen name="config_clipboard_entry_corner_radius">6dp</dimen>
 
     <!-- Floating keyboard -->
     <dimen name="config_floating_handle_height">30dp</dimen>

@@ -17,6 +17,7 @@ class ClipboardLayoutParams(ctx: Context) {
     private val keyHorizontalGap: Int
     private val listHeight: Int
     val bottomRowKeyboardHeight: Int
+    val clipboardEntryHeight: Int
 
     init {
         val res = ctx.resources
@@ -38,6 +39,9 @@ class ClipboardLayoutParams(ctx: Context) {
         // height calculation is not good enough, probably also because keyboard top padding might be off by a pixel (see KeyboardParser)
         val offset = 1.25f * res.displayMetrics.density * sv.mKeyboardHeightScale
         listHeight = defaultKeyboardHeight - bottomRowKeyboardHeight - bottomPadding + offset.toInt()
+        
+        // Clipboard entry fixed height for uniform appearance
+        clipboardEntryHeight = res.getDimensionPixelSize(R.dimen.config_clipboard_entry_height)
     }
 
     fun setListProperties(recycler: RecyclerView) {
@@ -49,6 +53,7 @@ class ClipboardLayoutParams(ctx: Context) {
 
     fun setItemProperties(view: View) {
         (view.layoutParams as RecyclerView.LayoutParams).apply {
+            height = clipboardEntryHeight
             topMargin = keyHorizontalGap / 2
             bottomMargin = keyVerticalGap / 2
             marginStart = keyHorizontalGap / 2
